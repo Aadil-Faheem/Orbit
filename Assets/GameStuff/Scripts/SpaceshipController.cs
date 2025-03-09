@@ -2,49 +2,56 @@ using UnityEngine;
 
 public class SpaceshipController : MonoBehaviour
 {
-    public float thrustPower = 10f;
-    public float rotationSpeed = 2f;
-    public Rigidbody rb;
+    public float acceleration = 10f; // Acceleration force
+    public float maxSpeed = 50f; // Maximum velocity
+    public float rotationSpeed = 3f; // Mouse sensitivity
+    public float rollSpeed = 50f; // Roll speed for Q/E
 
-    void Start()
+    private Vector3 velocity = Vector3.zero; // Current movement velocity
+    private float pitch = 0f, yaw = 0f, roll = 0f;
+
+    private void Start()
     {
-        if (rb == null)
-            rb = GetComponent<Rigidbody>();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    void Update()
+    private void Update()
     {
+        HandleMovement();
         HandleRotation();
     }
 
-    void FixedUpdate()
+    private void HandleMovement()
     {
-        HandleThrust();
+        Vector3 inputDirection = Vector3.zero;
+        if (Input.GetKey(KeyCode.W)) inputDirection += transform.forward;  // Forward
+        if (Input.GetKey(KeyCode.S)) inputDirection -= transform.forward;  // Backward
+        if (Input.GetKey(KeyCode.A)) inputDirection -= transform.right;    // Left strafe
+        if (Input.GetKey(KeyCode.D)) inputDirection += transform.right;    // Right strafe
+        if (Input.GetKey(KeyCode.LeftShift)) inputDirection += transform.up;  // Up
+        if (Input.GetKey(KeyCode.RightControl)) inputDirection -= transform.up; // Down
+
+        // Apply acceleration with inertia
+        velocity += inputDirection.normalized * acceleration * Time.deltaTime;
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+
+        transform.position += velocity * Time.deltaTime;
     }
 
-    void HandleThrust()
+    private void HandleRotation()
     {
-        Vector3 thrustDirection = Vector3.zero;
+        float mouseX = Input.GetAxis("Mouse X") * rotationSpeed;
+        float mouseY = Input.GetAxis("Mouse Y") * rotationSpeed;
 
-        if (Input.GetKey(KeyCode.LeftShift)) thrustDirection += transform.forward;
-        if (Input.GetKey(KeyCode.LeftControl)) thrustDirection -= transform.forward;
-        if (Input.GetKey(KeyCode.W)) thrustDirection += transform.up;
-        if (Input.GetKey(KeyCode.S)) thrustDirection -= transform.up;
-        if (Input.GetKey(KeyCode.A)) thrustDirection -= transform.right;
-        if (Input.GetKey(KeyCode.D)) thrustDirection += transform.right;
+        yaw += mouseX;
+        pitch -= mouseY;
+        pitch = Mathf.Clamp(pitch, -90f, 90f); // Prevents flipping upside down
 
-        rb.AddForce(thrustDirection * thrustPower, ForceMode.Force);
-    }
+        // Handle Roll properly
+        if (Input.GetKey(KeyCode.Q)) roll += rollSpeed * Time.deltaTime; // Roll left
+        if (Input.GetKey(KeyCode.E)) roll -= rollSpeed * Time.deltaTime; // Roll right
 
-    void HandleRotation()
-    {
-        float yaw = Input.GetAxis("Mouse X") * rotationSpeed;
-        float pitch = -Input.GetAxis("Mouse Y") * rotationSpeed;
-        float roll = 0f;
-
-        if (Input.GetKey(KeyCode.A)) roll = 1f;
-        if (Input.GetKey(KeyCode.D)) roll = -1f;
-
-        transform.Rotate(pitch, yaw, roll * rotationSpeed, Space.Self);
+        transform.rotation = Quaternion.Euler(pitch, yaw, roll);
     }
 }
