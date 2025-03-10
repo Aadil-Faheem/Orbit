@@ -585,7 +585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orbitCenter: {fileID: 2068011758}
-  orbitRadius: 4000
+  orbitRadius: 12000
   orbitSpeed: 10
 --- !u!1 &658965479
 GameObject:
@@ -1061,11 +1061,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 965768302}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b9d9ad43b745144dbe7eeb3af495f11, type: 3}
+  m_Script: {fileID: 11500000, guid: b0e53d9344fbd7a41b1d86f92ef07ac2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 1000
-  initialVelocity: {x: 0, y: 0, z: 0}
+  orbitCenter: {fileID: 2068011758}
+  orbitRadius: 8000
+  orbitSpeed: 10
 --- !u!1 &1491061674
 GameObject:
   m_ObjectHideFlags: 0
