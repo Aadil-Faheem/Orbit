@@ -7,13 +7,11 @@ using UnityEngine;
 namespace PlayerLogic
 {
     /**
-     * Player's main MonoBehaviour - which is a gian Humble Object.
-     * If you want to understand how player works - check out his humble object components
+     * Player's main MonoBehaviour
      */
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(PlayerControllable))]
     [RequireComponent(typeof(SpaceSuit))]
-    [RequireComponent(typeof(MarshmallowCookable))]
     public class Player : AcceleratedMonoBehaviour
     {
         // Unity components
@@ -24,7 +22,6 @@ namespace PlayerLogic
         // MonoBehaviour humble object components
         public SpaceSuit spaceSuit;
         [HideInInspector] public PlayerControllable playerControllable;
-        [HideInInspector] public MarshmallowCookable marshmallowCookable;
 
         // Other humble object components
         private OxygenBreathable oxygenBreathable;
@@ -47,7 +44,6 @@ namespace PlayerLogic
             // Separate components
             playerControllable = GetComponent<PlayerControllable>();
             spaceSuit = GetComponent<SpaceSuit>();
-            marshmallowCookable = GetComponent<MarshmallowCookable>();
 
             moveable = new Moveable(this);
             rotatable = new Rotatable();
@@ -75,12 +71,6 @@ namespace PlayerLogic
             if (BuckledUppable.IsBuckledUp())
             {
                 BuckledUppable.PilotShip(playerControllable.movement, playerControllable.rotation, playerControllable.alternativeRotate);
-                return;
-            }
-
-            if (marshmallowCookable.IsCooking())
-            {
-                marshmallowCookable.HoldMarshmallowStick(playerControllable.rotation, playerControllable.extendMarshmallowStick);
                 return;
             }
 
